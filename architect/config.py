@@ -59,7 +59,7 @@ def setup():
 	print blue(public_key)
 
 @task
-def bootstrap():
+def bootstrap(repo_pull_protocol='ssh'):
 	"""bootstrap the project"""
 	
 	require('home', provided_by=('development', 'staging', 'production'))
@@ -74,7 +74,19 @@ def bootstrap():
 	
 	with cd(env.home):
 		# Pull the repo
-		sudo('hg clone %s %s' % (env.project_repo, env.project_name), user=env.project_user)
+		
+		# Default to HG if a protocol isn't specified, otherwise try to match protocol
+		if env.project_repo.startswith('hg://') or env.project_repo.startswith('ssh://'):
+			real_repo_path = env.project_repo.replace('hg://', '%s://' % repo_pull_protocol)
+			sudo('hg clone %s %s' % (real_repo_path, env.project_name), user=env.project_user)
+			
+		elif env.project_repo.startswith('git://'):
+			real_repo_path = env.project_repo.replace('hg://', '%s://' % repo_pull_protocol)
+			sudo('git clone %s %s' % (real_repo_path, env.project_name), user=env.project_user)
+			
+		else:
+			print red('Unknown repository protocol.')
+			return
 		
 		# Setup the pip build command
 		pip_cmd = '%s install -q -r %s --log=%s' % (

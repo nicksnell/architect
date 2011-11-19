@@ -30,7 +30,7 @@ setup(
 	zip_safe=True,
 	packages=find_packages(exclude=['tests',]),
 	dependency_links = [
-	
+		'pyyaml',
 	],
 	entry_points = {
 		'console_scripts': [

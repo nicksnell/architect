@@ -5,7 +5,7 @@ from fabric.colors import cyan
 from fabric.decorators import task
 
 @task(default=True)
-def listlogs():
+def list():
 	"""list the available logs"""
 	
 	require('home', provided_by=('development', 'staging', 'production'))
@@ -18,7 +18,7 @@ def listlogs():
 	print cyan(logs)
 
 @task
-def getlog(log, size=50):
+def get(log, size=50):
 	"""get the last output of a given log"""
 	
 	require('home', provided_by=('development', 'staging', 'production'))
@@ -30,7 +30,7 @@ def getlog(log, size=50):
 	print cyan(log_contents)
 
 @task
-def clearlog(log, size=50):
+def clear(log, size=50):
 	"""get the last output of a given log"""
 	
 	require('home', provided_by=('development', 'staging', 'production'))

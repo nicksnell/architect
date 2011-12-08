@@ -1,0 +1,16 @@
+Metadata-Version: 1.0
+Name: Architect
+Version: 1.0
+Summary: Architect
+Home-page: http://orpo.co.uk/
+Author: Nick Snell
+Author-email: nick@orpo.co.uk
+License: Private
+Download-URL: http://code.orpo.co.uk/
+Description: Architect - Web application builder
+Platform: Linux
+Classifier: Environment :: Web Environment
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content

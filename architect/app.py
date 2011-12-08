@@ -100,16 +100,29 @@ def bootstrap(repo_pull_protocol='ssh'):
 		# Install the required modules
 		sudo(pip_cmd, user=env.project_user)
 		
-		# Link the configs
-		sudo('ln -s %s /etc/nginx/sites-enabled/%s' % (
-			os.path.join(env.home, env.project_name, 'etc/nginx.conf'), 
-			env.project_url
-		))
+		if os.path.exists('etc/nginx.conf'):
+			# Link the configs
+			sudo('ln -s %s /etc/nginx/sites-enabled/%s' % (
+				os.path.join(env.home, env.project_name, 'etc/nginx.conf'), 
+				env.project_url
+			))
+		else:
+			# Link the configs
+			sudo('ln -s %s /etc/nginx/sites-enabled/%s' % (
+				os.path.join(env.home, env.project_name, 'etc/nginx.%s.conf' % env.environment), 
+				env.project_url
+			))
 		
-		sudo('cp %s /etc/init/%s.conf' % (
-			os.path.join(env.home, env.project_name, 'etc/upstart.conf'), 
-			env.project_name
-		))
+		if os.path.exists('etc/upstart.conf'):
+			sudo('cp %s /etc/init/%s.conf' % (
+				os.path.join(env.home, env.project_name, 'etc/upstart.conf'), 
+				env.project_name
+			))
+		else:
+			sudo('cp %s /etc/init/%s.conf' % (
+				os.path.join(env.home, env.project_name, 'etc/upstart.%s.conf' % env.environment), 
+				env.project_name
+			))
 	
 	print green('Environment is setup.')
 
@@ -219,10 +232,16 @@ def upstart_link():
 	require('home', provided_by=('develpment', 'staging', 'production'))
 	require('project_name', provided_by=('develpment', 'staging', 'production'))
 	
-	sudo('cp %s /etc/init/%s.conf' % (
-		os.path.join(env.home, env.project_name, 'etc/upstart.conf'), 
-		env.project_name
-	))
+	if os.path.exists('etc/upstart.conf'):
+		sudo('cp %s /etc/init/%s.conf' % (
+			os.path.join(env.home, env.project_name, 'etc/upstart.conf'), 
+			env.project_name
+		))
+	else:
+		sudo('cp %s /etc/init/%s.conf' % (
+			os.path.join(env.home, env.project_name, 'etc/upstart.%s.conf' % env.environment), 
+			env.project_name
+		))
 	
 @task
 def upstart_unlink():

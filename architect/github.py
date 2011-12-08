@@ -6,7 +6,7 @@ from fabric.api import *
 from fabric.colors import green
 from fabric.decorators import task
 
-import github
+#import github
 
 @task
 def add_deploy_key(key):
@@ -16,5 +16,5 @@ def add_deploy_key(key):
 	require('github_api_key', provided_by=('development', 'staging', 'production'))
 	require('github_repo_name', provided_by=('development', 'staging', 'production'))
 	
-	client = github.GitHub(env.github_user, env.github_api_key)
+	#client = github.GitHub(env.github_user, env.github_api_key)
 	

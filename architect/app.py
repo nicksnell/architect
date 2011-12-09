@@ -210,6 +210,7 @@ def install_mods():
 	
 	require('host', provided_by=('staging', 'production'))
 	require('home', provided_by=('staging', 'production'))
+	require('project_name', provided_by=('develpment', 'staging', 'production'))
 	
 	virtual_env_bin = os.path.join(env.home, 'bin')
 	pip = os.path.join(virtual_env_bin, 'pip')
@@ -233,6 +234,7 @@ def install_crontab():
 	
 	require('host', provided_by=('staging', 'production'))
 	require('home', provided_by=('staging', 'production'))
+	require('project_name', provided_by=('develpment', 'staging', 'production'))
 	
 	# Check we have a cron file
 	if not os.path.exists('etc/cron.txt'):
@@ -241,7 +243,7 @@ def install_crontab():
 	
 	with cd(env.home):
 		# Install the cron file
-		run('crontab etc/cron.txt')
+		run('crontab %s' % os.path.join(env.home, env.project_name, 'etc/cron.txt'))
 	
 	print green('Crontab installed.')
 	

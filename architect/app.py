@@ -3,7 +3,7 @@
 import os.path
 
 from fabric.api import *
-from fabric.colors import red, blue, green
+from fabric.colors import red, blue, green, yellow
 from fabric.contrib.console import confirm
 from fabric.decorators import task
 
@@ -59,6 +59,7 @@ def setup():
 		public_key = sudo('cat %s' % os.path.join(env.home, '.ssh', 'id_rsa.pub'))
 	
 	print blue(public_key)
+	print green('Setup complete.')
 
 @task
 def bootstrap(repo_pull_protocol='ssh'):
@@ -146,6 +147,8 @@ def remove_app():
 def test():
 	"""run a test command on a host, prints hosts type"""
 	run('uname -a')
+	
+	print green('Test ran.')
 
 @task(default=True)
 def deploy():
@@ -225,6 +228,24 @@ def install_mods():
 	print green('Modules installed.')
 
 @task
+def install_crontab():
+	"""install a crontab"""
+	
+	require('host', provided_by=('staging', 'production'))
+	require('home', provided_by=('staging', 'production'))
+	
+	# Check we have a cron file
+	if not os.path.exists('etc/cron.txt'):
+		print red('No crontab found! - looking for etc/cron.txt')
+		return
+	
+	with cd(env.home):
+		# Install the cron file
+		run('crontab etc/cron.txt')
+	
+	print green('Crontab installed.')
+	
+@task
 def upstart_link():
 	"""load upstart script"""
 	
@@ -242,6 +263,8 @@ def upstart_link():
 			os.path.join(env.home, env.project_name, 'etc/upstart.%s.conf' % env.environment), 
 			env.project_name
 		))
+		
+	print green('Upstart conf linked.')
 	
 @task
 def upstart_unlink():
@@ -251,7 +274,9 @@ def upstart_unlink():
 	require('project_name', provided_by=('develpment', 'staging', 'production'))
 	
 	sudo('rm /etc/init/%s.conf' % env.project_name)
-
+	
+	print green('Upstart conf linked.')
+	
 @task
 def start():
 	"""start the uwsgi application"""
@@ -260,6 +285,8 @@ def start():
 	require('project_name', provided_by=('develpment', 'staging', 'production'))
 	
 	sudo('start %s' % env.project_name)
+	
+	print yellow('Upstart conf unlinked.')
 
 @task
 def restart():
@@ -269,6 +296,8 @@ def restart():
 	require('project_name', provided_by=('develpment', 'staging', 'production'))
 	
 	sudo('restart %s' % env.project_name)
+	
+	print green('Project restarted.')
 
 @task
 def stop():
@@ -278,6 +307,8 @@ def stop():
 	require('project_name', provided_by=('develpment', 'staging', 'production'))
 	
 	sudo('stop %s' % env.project_name)
+	
+	print yellow('Project stopped.')
 
 @task
 def destroy():

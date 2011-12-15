@@ -176,13 +176,17 @@ def deploy():
 	print green('Application Deployed.')
 
 @task
-def redeploy():
+def redeploy(repo_pull_protocol='ssh'):
 	"""deploy the application"""
 	
 	require('host', provided_by=('development', 'staging', 'production'))
 	require('home', provided_by=('development', 'staging', 'production'))
 	require('project_name', provided_by=('development','staging', 'production'))
 	require('project_user', provided_by=('development','staging', 'production'))
+	
+	if not confirm(red('Remove application "%s"?' % os.path.join(env.home, env.project_name))):
+		print red('Aborted.')
+		return
 	
 	# Remove the app
 	sudo('rm -rf %s' % os.path.join(env.home, env.project_name))
@@ -195,7 +199,7 @@ def redeploy():
 			sudo('hg clone %s %s' % (real_repo_path, env.project_name), user=env.project_user)
 			
 		elif env.project_repo.startswith('git://'):
-			real_repo_path = env.project_repo.replace('hg://', '%s://' % repo_pull_protocol)
+			real_repo_path = env.project_repo.replace('git://', '%s://' % repo_pull_protocol)
 			sudo('git clone %s %s' % (real_repo_path, env.project_name), user=env.project_user)
 			
 		else:
@@ -261,6 +265,8 @@ def upstart_link():
 			env.project_name
 		))
 	else:
+		require('environment', provided_by=('develpment', 'staging', 'production'))
+		
 		sudo('cp %s /etc/init/%s.conf' % (
 			os.path.join(env.home, env.project_name, 'etc/upstart.%s.conf' % env.environment), 
 			env.project_name
@@ -277,8 +283,44 @@ def upstart_unlink():
 	
 	sudo('rm /etc/init/%s.conf' % env.project_name)
 	
-	print green('Upstart conf linked.')
+	print green('Upstart conf unlinked.')
+
+@task
+def nginx_link():
+	"""load upstart script"""
 	
+	require('host', provided_by=('development', 'staging', 'production'))
+	require('home', provided_by=('develpment', 'staging', 'production'))
+	require('project_name', provided_by=('develpment', 'staging', 'production'))
+	
+	if os.path.exists('etc/nginx.conf'):
+		# Link the configs
+		sudo('ln -s %s /etc/nginx/sites-enabled/%s' % (
+			os.path.join(env.home, env.project_name, 'etc/nginx.conf'), 
+			env.project_url
+		))
+	else:
+		require('environment', provided_by=('develpment', 'staging', 'production'))
+		
+		# Link the configs
+		sudo('ln -s %s /etc/nginx/sites-enabled/%s' % (
+			os.path.join(env.home, env.project_name, 'etc/nginx.%s.conf' % env.environment), 
+			env.project_url
+		))
+		
+	print green('Nginx conf linked.')
+
+@task
+def nginx_unlink():
+	"""unload upstart script"""
+	
+	require('host', provided_by=('development', 'staging', 'production'))
+	require('project_name', provided_by=('develpment', 'staging', 'production'))
+	
+	sudo('rm /etc/nginx/sites-enabled/%s' % env.project_url)
+	
+	print green('Nginx conf unlinked.')
+
 @task
 def start():
 	"""start the uwsgi application"""
@@ -288,7 +330,7 @@ def start():
 	
 	sudo('start %s' % env.project_name)
 	
-	print yellow('Upstart conf unlinked.')
+	print green('Project started.')
 
 @task
 def restart():
@@ -345,3 +387,17 @@ def destroy():
 	restart_nginx()
 	
 	print red('Application Destroyed.')
+
+@task
+def get_ssh_key():
+	"""get the apps ssh key"""
+	
+	require('host', provided_by=('development', 'staging', 'production'))
+	require('home', provided_by=('development', 'staging', 'production'))
+	require('project_name', provided_by=('develpment', 'staging', 'production'))
+	
+	with hide('stdout'):
+		public_key = sudo('cat %s' % os.path.join(env.home, '.ssh', 'id_rsa.pub'))
+			
+	print blue(public_key)
+	

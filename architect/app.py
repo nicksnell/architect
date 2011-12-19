@@ -84,7 +84,7 @@ def bootstrap(repo_pull_protocol='ssh'):
 			sudo('hg clone %s %s' % (real_repo_path, env.project_name), user=env.project_user)
 			
 		elif env.project_repo.startswith('git://'):
-			real_repo_path = env.project_repo.replace('hg://', '%s://' % repo_pull_protocol)
+			real_repo_path = env.project_repo.replace('git://', '')
 			sudo('git clone %s %s' % (real_repo_path, env.project_name), user=env.project_user)
 			
 		else:
@@ -199,7 +199,7 @@ def redeploy(repo_pull_protocol='ssh'):
 			sudo('hg clone %s %s' % (real_repo_path, env.project_name), user=env.project_user)
 			
 		elif env.project_repo.startswith('git://'):
-			real_repo_path = env.project_repo.replace('git://', '%s://' % repo_pull_protocol)
+			real_repo_path = env.project_repo.replace('git://', '')
 			sudo('git clone %s %s' % (real_repo_path, env.project_name), user=env.project_user)
 			
 		else:

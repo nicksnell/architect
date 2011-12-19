@@ -1,7 +1,7 @@
 """Commands for dealing with server services"""
 
 from fabric.api import *
-from fabric.colors import red, blue, green
+from fabric.colors import red, blue, green, yellow
 from fabric.decorators import task
 
 @task
@@ -9,24 +9,28 @@ def start():
 	"""start nginx"""
 	require('host', provided_by=('development', 'staging', 'production'))
 	sudo('/etc/init.d/nginx start')
+	print green('Nginx Started.')
 
 @task
 def stop():
 	"""stop nginx"""
 	require('host', provided_by=('development', 'staging', 'production'))
 	sudo('/etc/init.d/nginx stop')
+	print yellow('Nginx Stopped.')
 
 @task
 def restart():
 	"""restart nginx"""
 	require('host', provided_by=('development', 'staging', 'production'))
 	sudo('/etc/init.d/nginx restart')
+	print green('Nginx Restarted.')
 
 @task
 def reload():
 	"""reload nginx"""
 	require('host', provided_by=('development', 'staging', 'production'))
 	sudo('/etc/init.d/nginx reload')
+	print green('Nginx Reload.')
 
 @task
 def status():

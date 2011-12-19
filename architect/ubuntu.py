@@ -33,13 +33,16 @@ def build():
 	print green('Packages Built.')
 
 @task
-def install(mods=[]):
+def install(mods=None):
 	"""install os packages using apt-get"""
 	
 	require('host', provided_by=('development', 'staging', 'production'))
 	
-	if mods:
-		sudo('apt-get install %s' % ' '.join(mods))
+	if not mods:
+		print red('Please specify a module to install!')
+		return
+		
+	sudo('apt-get install %s' % mods)
 		
 	print green('Packages Installed.')
 

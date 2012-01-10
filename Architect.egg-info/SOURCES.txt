@@ -8,6 +8,7 @@ Architect.egg-info/top_level.txt
 Architect.egg-info/zip-safe
 architect/__init__.py
 architect/app.py
+architect/deploycms.py
 architect/django.py
 architect/github.py
 architect/logs.py

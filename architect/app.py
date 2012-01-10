@@ -88,18 +88,23 @@ def bootstrap(repo_pull_protocol='ssh'):
 			sudo('git clone %s %s' % (real_repo_path, env.project_name), user=env.project_user)
 			
 		else:
-			print red('Unknown repository protocol.')
+			print red('Unknown repository protocol!')
 			return
 		
-		# Setup the pip build command
-		pip_cmd = '%s install -q -r %s --log=%s' % (
-			pip, 
-			os.path.join(env.home, env.project_name, 'etc/pip.conf'), 
-			os.path.join(env.home, 'logs', 'pip.log')
-		)
-		
-		# Install the required modules
-		sudo(pip_cmd, user=env.project_user)
+		# Check if we need to install any modules
+		if os.path.exists('etc/pip.conf'):
+			# Setup the pip build command
+			pip_cmd = '%s install -q -r %s --log=%s' % (
+				pip, 
+				os.path.join(env.home, env.project_name, 'etc/pip.conf'), 
+				os.path.join(env.home, 'logs', 'pip.log')
+			)
+			
+			# Install the required modules
+			sudo(pip_cmd, user=env.project_user)
+			
+		else:
+			print yellow('No pip installation!')
 		
 		if os.path.exists('etc/nginx.conf'):
 			# Link the configs
@@ -120,10 +125,13 @@ def bootstrap(repo_pull_protocol='ssh'):
 				env.project_name
 			))
 		else:
-			sudo('cp %s /etc/init/%s.conf' % (
-				os.path.join(env.home, env.project_name, 'etc/upstart.%s.conf' % env.environment), 
-				env.project_name
-			))
+			if os.path.exists('etc/upstart.%s.conf' % env.environment):
+				sudo('cp %s /etc/init/%s.conf' % (
+					os.path.join(env.home, env.project_name, 'etc/upstart.%s.conf' % env.environment), 
+					env.project_name
+				))
+			else:
+				print yellow('No Upstart file added!')
 	
 	print green('Environment is setup.')
 
@@ -239,6 +247,7 @@ def install_crontab():
 	require('host', provided_by=('staging', 'production'))
 	require('home', provided_by=('staging', 'production'))
 	require('project_name', provided_by=('develpment', 'staging', 'production'))
+	require('project_user', provided_by=('development', 'staging', 'production'))
 	
 	# Check we have a cron file
 	if not os.path.exists('etc/cron.txt'):
@@ -247,7 +256,10 @@ def install_crontab():
 	
 	with cd(env.home):
 		# Install the cron file
-		run('crontab %s' % os.path.join(env.home, env.project_name, 'etc/cron.txt'))
+		sudo('crontab -u %s %s' % (
+			env.project_user,
+			os.path.join(env.home, env.project_name, 'etc/cron.txt')
+		))
 	
 	print green('Crontab installed.')
 	

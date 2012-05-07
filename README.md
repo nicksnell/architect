@@ -1,5 +1,4 @@
-Architect - Web application builder toolkit
-===========================================
+#Architect - Web application builder toolkit
 
 A collection of tools for building websites/applications using the Fabric tool.
 

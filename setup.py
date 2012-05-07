@@ -16,8 +16,8 @@ setup(
 	long_description=long_description,
 	author='Nick Snell',
 	author_email='nick@orpo.co.uk',
-	url='http://orpo.co.uk/',
-	download_url='http://code.orpo.co.uk/',
+	url='https://github.com/nicksnell/Architect',
+	download_url='https://github.com/nicksnell/Architect',
 	license='Private',
 	platforms=['Linux',],
 	classifiers=[

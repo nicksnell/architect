@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Architect - Web application builder
-
 from setuptools import setup, find_packages
-
 from architect import __version__
 
 long_description = """Architect - Web application builder"""
@@ -18,7 +16,7 @@ setup(
 	author_email='nick@orpo.co.uk',
 	url='https://github.com/nicksnell/Architect',
 	download_url='https://github.com/nicksnell/Architect',
-	license='Private',
+	license='BSD',
 	platforms=['Linux',],
 	classifiers=[
 		'Environment :: Web Environment',
@@ -29,16 +27,9 @@ setup(
 	],
 	zip_safe=True,
 	packages=find_packages(exclude=['tests',]),
-	dependency_links = [
-		'pyyaml',
-	],
-	entry_points = {
-		'console_scripts': [
-			
-		]
-	},
 	install_requires=[
-		'Fabric>=1.3'
+		'Fabric>=1.3',
+		'pyyaml==3.10'
 	],
 	extras_require={}
 )

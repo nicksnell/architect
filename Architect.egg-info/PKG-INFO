@@ -1,12 +1,12 @@
-Metadata-Version: 1.0
+Metadata-Version: 1.1
 Name: Architect
-Version: 1.0
+Version: 1.1
 Summary: Architect
-Home-page: http://orpo.co.uk/
+Home-page: https://github.com/nicksnell/Architect
 Author: Nick Snell
 Author-email: nick@orpo.co.uk
-License: Private
-Download-URL: http://code.orpo.co.uk/
+License: BSD
+Download-URL: https://github.com/nicksnell/Architect
 Description: Architect - Web application builder
 Platform: Linux
 Classifier: Environment :: Web Environment

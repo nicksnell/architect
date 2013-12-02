@@ -242,19 +242,31 @@ def install_mods():
 
 	virtual_env_bin = _get_venv_bin(env)
 	pip = os.path.join(virtual_env_bin, 'pip')
+	pip_cmd = None
 
 	with cd(env.home):
-		# Setup the pip build command
-		pip_cmd = '%s install -q -r %s --log=%s' % (
-			pip,
-			os.path.join(env.home, env.project_name, 'etc/pip.conf'),
-			os.path.join(env.home, 'logs', 'pip.log')
-		)
+		# Check if we need to install any modules
+		if os.path.exists('etc/pip.conf'):
+			# Setup the pip build command
+			pip_cmd = '%s install -q -r %s --log=%s' % (
+				pip,
+				os.path.join(env.home, env.project_name, 'etc/pip.conf'),
+				os.path.join(env.home, 'logs', 'pip.log')
+			)
 
+		if os.path.exists('requirements.txt'):
+			pip_cmd = '%s install -q -r %s --log=%s' % (
+				pip,
+				os.path.join(env.home, env.project_name, 'requirements.txt'),
+				os.path.join(env.home, 'logs', 'pip.log')
+			)
+
+	if pip_cmd is not None:
 		# Install the required modules
 		sudo(pip_cmd, user=env.project_user)
-
-	print green('Modules installed.')
+		print green('PIP install ran.')
+	else:
+		print yellow('Could not run pip!')
 
 @task
 def install_crontab():

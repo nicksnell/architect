@@ -1,6 +1,6 @@
 import os.path
 
-def _get_venv_bin():
+def _get_venv_bin(env):
 	# Try to find the virtual environment
 	if hasattr(env, 'venv'):
 		return os.path.join(env.venv, 'bin')

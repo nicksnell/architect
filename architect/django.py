@@ -16,7 +16,7 @@ def manage(cmd, *args, **kwargs):
 	require('project_name', provided_by=('development', 'staging', 'production'))
 	require('project_user', provided_by=('development', 'staging', 'production'))
 
-	virtual_env_bin = _get_venv_bin()
+	virtual_env_bin = _get_venv_bin(env)
 	py = os.path.join(virtual_env_bin, 'python')
 
 	with cd(env.home):

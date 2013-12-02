@@ -8,6 +8,7 @@ from fabric.contrib.console import confirm
 from fabric.decorators import task
 
 from architect.nginx import restart as restart_nginx
+from architect.utils import _get_venv_bin
 
 @task
 def setup():
@@ -77,7 +78,7 @@ def bootstrap(repo_pull_protocol='ssh'):
 	require('project_url', provided_by=('development', 'staging', 'production'))
 	require('project_user', provided_by=('development', 'staging', 'production'))
 
-	virtual_env_bin = _get_venv_bin()
+	virtual_env_bin = _get_venv_bin(env)
 	pip = os.path.join(virtual_env_bin, 'pip')
 
 	with cd(env.home):
@@ -239,7 +240,7 @@ def install_mods():
 	require('home', provided_by=('staging', 'production'))
 	require('project_name', provided_by=('develpment', 'staging', 'production'))
 
-	virtual_env_bin = _get_venv_bin()
+	virtual_env_bin = _get_venv_bin(env)
 	pip = os.path.join(virtual_env_bin, 'pip')
 
 	with cd(env.home):
